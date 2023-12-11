@@ -27,7 +27,7 @@ public class parser {
         throw new Exception("Can't exctract date from string");
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws Exception {
         Document page = getPage();
         Element tableWth = page.select("table[class=wt]").first();
         Elements names = tableWth.select("tr[class=wth]");
