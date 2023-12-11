@@ -6,6 +6,8 @@ import org.jsoup.select.Elements;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class parser {
 
@@ -15,6 +17,16 @@ public class parser {
         return page;
     }
 
+    private static Pattern pattern = Pattern.compile("\\d{2}\\.\\d{2}");
+
+    private static String getDateFromString(String stringDate) throws Exception{
+        Matcher matcher = pattern.matcher(stringDate);
+        if(matcher.find()){
+            return matcher.group();
+        }
+        throw new Exception("Can't exctract date from string");
+    }
+
     public static void main(String[] args) throws IOException {
         Document page = getPage();
         Element tableWth = page.select("table[class=wt]").first();
@@ -22,7 +34,8 @@ public class parser {
         Elements values = tableWth.select("tr[valign=top]");
 
         for (Element name: names) {
-            String date=name.select("th[id=dt]").text();
+            String dateString=name.select("th[id=dt]").text();
+            String date=getDateFromString(dateString);
             System.out.println( date + "     Явления Температура Давление Влажность Ветер");
         }
         System.out.println(names);
