@@ -24,7 +24,36 @@ public class parser {
         if(matcher.find()){
             return matcher.group();
         }
-        throw new Exception("Can't exctract date from string");
+        throw new Exception("Can't extract date from string");
+    }
+
+    private static int printPartValues(Elements values, int index) {
+        int iterationCount = 4;
+        if (index == 0) {
+            Element valueLn = values.get(3);
+            boolean isMorning = valueLn.text().contains("Утро");
+
+            if (isMorning) {
+                iterationCount = 3;
+            }
+
+            for (int i = 0; i < iterationCount; i++) {
+                Element valueLine = values.get(index + i);
+                for (Element td : valueLine.select("td")) {
+                    System.out.print(td.text() + "    ");
+                }
+                System.out.println();
+            }
+            return iterationCount;
+        }
+        for (int i = 0; i < iterationCount; i++) {
+            Element valueLine = values.get(index + i);
+            for (Element td : valueLine.select("td")) {
+                System.out.print(td.text() + "    ");
+            }
+            System.out.println();
+        }
+        return iterationCount;
     }
 
     public static void main(String[] args) throws Exception {
@@ -32,13 +61,14 @@ public class parser {
         Element tableWth = page.select("table[class=wt]").first();
         Elements names = tableWth.select("tr[class=wth]");
         Elements values = tableWth.select("tr[valign=top]");
+        int index = 0;
 
         for (Element name: names) {
             String dateString=name.select("th[id=dt]").text();
             String date=getDateFromString(dateString);
             System.out.println( date + "     Явления Температура Давление Влажность Ветер");
+            int iterationCount = printPartValues(values, index);
+            index = index + iterationCount;
         }
-        System.out.println(names);
-
     }
 }
